@@ -11,14 +11,24 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.ai.client.generativeai.GenerativeModel
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+
 
 class AiGenerateActivity : AppCompatActivity() {
+
+    private val BASE_URL = "https://api.groq.com/"
+    private val GROQ_API_KEY = "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"
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,48 +38,68 @@ class AiGenerateActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val textprompt:EditText=findViewById(R.id.prompt)
         var outputBox:TextView=findViewById(R.id.output)
         var generateButton:Button=findViewById(R.id.genbutton)
         val add:Button=findViewById(R.id.addProject)
-        val prompt = textprompt.toString()
 
         generateButton.setOnClickListener {
-//            val generativeModel = GenerativeModel(
-//                modelName = "gemini-pro",
-//                apiKey = "AIzaSyD6fKS1Jil8me1EBVLAi3jbuejuM_2D4TE",
-//            )
-//
-//            runBlocking {
-//                val response = generativeModel.generateContent(prompt)
-//                outputBox.text=response.text.toString()
-//                Log.d("msg", "${response.text} ")
-//            }
-            outputBox.visibility=View.VISIBLE
-            outputBox.text="Setup: Create a new Android project in Android Studio. '\\n'\n" +
-                    "            UI Design: Design screens for adding, editing, and viewing recipes following Material Design guidelines.\n" +
-                    "            Data Model: Define a data model for recipes, including properties like name, ingredients, and instructions.\n" +
-                    "            Recipe Editor: Implement screens for adding and editing recipes with appropriate UI components.\n" +
-                    "            Recipe List: Create a screen to display a list of recipes using RecyclerView.\n" +
-                    "            Details View: Implement a screen to display detailed information about a selected recipe.\n" +
-                    "            Image Support: Allow users to attach images to recipes.\n" +
-                    "            Data Persistence: Implement data persistence to save and retrieve recipe data.\n" +
-                    "            Enhance UX: Add animations, transitions, and responsive design for better user experience.\n" +
-                    "            Testing: Test the app thoroughly and consider automated testing.\n" +
-                    "            Publishing: Optimize the app for release and publish it on app stores.\n" +
-                    "            Maintenance: Continuously update and maintain the app based on user feedback and new requirements"
-            add.visibility=View.VISIBLE
+            val msgText:TextView = findViewById(R.id.inputprompt)
+            val userInput:String = msgText.text.toString()
+            Log.d("TAG", "onCreate: $msgText")
+            Log.d("TAG", "onCreate: $userInput")
 
 
+            val msg="fitness"
+            val text="As a professional application developer with over a decade of experience in building various software applications, I am well-versed in creating sophisticated solutions tailored to meet $userInput needs. Your task today is to build a roadmap for a specific type of application.Please provide the following details for me to generate a comprehensive roadmap:- Name: ________- Tech Stacks: ________- User Flow: ________- Design Inspiration: ___________________- Resources for APIs: ___________________- Basic or Must-Have Features: ________Additionally, please specify:- What is the best technology or framework for building this type of application?"
+            Log.d("TAG", "onCreate: ${text.toString()}")
+            //Retrofit Call
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val client = OkHttpClient()
+
+                    val MEDIA_TYPE = "application/json".toMediaType()
+
+                    val requestBody = """
+        {
+            "messages": [{"role": "user", "content": "$text"}],
+            "model": "mixtral-8x7b-32768"
         }
+    """.trimIndent()
+                    val request = Request.Builder()
+                        .url("https://api.groq.com/openai/v1/chat/completions")
+                        .post(requestBody.toRequestBody(MEDIA_TYPE))
+                        .header("Authorization", "Bearer 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")
+                        .header("Content-Type", "application/json")
+                        .build()
+
+                    client.newCall(request).execute().use { response ->
+                        if (!response.isSuccessful) {
+                            throw IOException("Unexpected code $response")
+                        }
+
+                        val responseBody = response.body?.string()
+
+                        // Update UI on the main thread
+                        withContext(Dispatchers.Main) {
+                            val jsonObject = responseBody?.let { it1 -> JSONObject(it1) }
+                            val messageContent = jsonObject?.getJSONArray("choices")?.getJSONObject(0)
+                                ?.getJSONObject("message")?.getString("content")
+                            outputBox.text=messageContent.toString()
+                            outputBox.visibility=View.VISIBLE
+
+                            Log.d("TAG", "onCreate: $messageContent")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("TAG", "Error: ${e.message}", e)
+                }
+            }
+            add.visibility=View.VISIBLE
+            }
         add.setOnClickListener {
-                val intent = Intent(this, DashboardActivity::class.java)
+                val intent = Intent(this, ProjectActivity::class.java)
                 startActivity(intent)
                 finish()
         }
-
-
-
     }
-
 }

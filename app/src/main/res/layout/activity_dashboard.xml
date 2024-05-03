@@ -183,7 +183,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -206,7 +206,7 @@
                 android:gravity="center"
                 android:padding="16dp"
                 android:text="Add your project"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
         <!-- Second Card -->
@@ -223,7 +223,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="16dp"
+                android:padding="18dp"
                 android:text="Generate with AI !"
                 android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
