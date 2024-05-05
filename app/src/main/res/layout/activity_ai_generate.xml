@@ -21,35 +21,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.07" />
 
+
     <EditText
         android:id="@+id/inputprompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="235dp"
+        android:layout_height="53dp"
         android:ems="10"
+        android:hint="Enter App Type"
         android:inputType="text"
-        android:hint="App Type"
-        android:textColorHint="@color/white"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.142"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.234" />
-
+        app:layout_constraintVertical_bias="0.232" />
 
     <Button
         android:id="@+id/genbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="133dp"
+        android:layout_height="51dp"
         android:text="Generate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.862"
+        app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.235" />
-
+        app:layout_constraintVertical_bias="0.236" />
 
     <ScrollView
         android:layout_width="398dp"
@@ -60,7 +59,7 @@
         app:layout_constraintHorizontal_bias="0.461"
         android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prompt"
+        app:layout_constraintTop_toBottomOf="@+id/inputprompt"
         app:layout_constraintVertical_bias="1.0">
 
         <TextView
